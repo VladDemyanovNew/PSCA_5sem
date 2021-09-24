@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>03-03</title>
+</head>
+<body>
+<div id="result"></div>
+<script>
+    const startTime = Date.now();
+    for (let x = 1; x <= 20; x++) {
+        fetch(`http://localhost:3000/fact?k=${x}`, {
+            method: 'GET',
+            headers: {'Content-Type' : 'application/json'}
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            result.innerHTML += `${x}.Результат: ${Date.now() - startTime}-${data.k}/${data.fact}<br>`;
+        });
+    }
+</script>
+</body>
+</html>
