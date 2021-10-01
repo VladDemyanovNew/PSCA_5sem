@@ -2,10 +2,12 @@ import http from "http";
 import url from "url";
 import fs from "fs";
 import DB from "./DB.js";
+import Util from "./util.js";
 
 const dbInstance = new DB();
+process.stdin.unref();
 
-dbInstance.on("GET", async (req, resp)=> {
+dbInstance.on("GET", async (req, resp) => {
     console.log("get");
     dbInstance.increaseReqCount();
     let id = url.parse(req.url, true).query.id;
@@ -19,7 +21,7 @@ dbInstance.on("GET", async (req, resp)=> {
     }
 });
 
-dbInstance.on("POST", async (req, resp)=> {
+dbInstance.on("POST", async (req, resp) => {
     console.log("post");
     dbInstance.increaseReqCount();
     req.on("data", async data => {
@@ -30,7 +32,7 @@ dbInstance.on("POST", async (req, resp)=> {
     });
 });
 
-dbInstance.on("PUT", async (req, resp)=> {
+dbInstance.on("PUT", async (req, resp) => {
     console.log("put");
     dbInstance.increaseReqCount();
     req.on("data", async data => {
@@ -41,7 +43,7 @@ dbInstance.on("PUT", async (req, resp)=> {
     });
 });
 
-dbInstance.on("DELETE", async (req, resp)=> {
+dbInstance.on("DELETE", async (req, resp) => {
     console.log("delete");
     dbInstance.increaseReqCount();
     let id = url.parse(req.url, true).query.id;
@@ -52,7 +54,7 @@ dbInstance.on("DELETE", async (req, resp)=> {
 });
 
 dbInstance.on("COMMIT", () => {
-
+    dbInstance.commit();
 });
 
 function processRoutes(req, resp, pathname) {
@@ -76,21 +78,33 @@ function processRoutes(req, resp, pathname) {
     }
 }
 
-function processCommands() {
-    console.log("test");
-    process.stdin.on('readable', ()=> {
-        let chunk = null;
-        while ((chunk = process.stdin.read()) != null) {
-            //let res = chunk.trim(" ");
-            //console.log(res);
-        }
-    });
-}
-
-processCommands();
-
-http.createServer((req, resp) => {
+let server = http.createServer((req, resp) => {
     const pathname = url.parse(req.url).pathname;
     processRoutes(req, resp, pathname);
 
 }).listen(5000, "127.0.0.1");
+
+let utilInstance = new Util(server, dbInstance);
+
+process.stdin.setEncoding('utf-8');
+process.stdin.on('readable', () => {
+    let chunk = null;
+    while ((chunk = process.stdin.read()) != null) {
+        let [command, sec] = chunk.trim().split(" ");
+
+        switch (command) {
+            case "sd":
+                utilInstance.sd(sec);
+                break;
+            case "sc":
+                utilInstance.sc(sec);
+                break;
+            case "ss":
+                utilInstance.ss(sec);
+                break;
+            default:
+                console.log("Команда не найдена!");
+                break;
+        }
+    }
+});

@@ -15,6 +15,17 @@ let stat = {
 }
 
 export default class DB extends EventEmitter {
+    #statMode = false;
+
+
+    turnOnStatMode(){
+        this.#statMode = true;
+    }
+
+    turnOffStatMode(){
+        this.#statMode = false;
+    }
+
     select() {
         return users;
     }
@@ -54,11 +65,29 @@ export default class DB extends EventEmitter {
 
     commit() {
         console.log("commit bd");
-        stat.commitCount++;
+        if (this.#statMode)
+            stat.commitCount++;
     }
 
     increaseReqCount() {
-        stat.reqCount++;
+        if (this.#statMode)
+            stat.reqCount++;
+    }
+
+    setStartDate(date) {
+        stat.startDate = date;
+    }
+
+    setFinishDate(date) {
+        stat.finishDate = date;
+    }
+
+    setReqCount(count) {
+        stat.reqCount = count;
+    }
+
+    setCommitCount(count) {
+        stat.commitCount = count;
     }
 
     getStat() {
