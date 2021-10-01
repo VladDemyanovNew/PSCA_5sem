@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 5% 10%;
+        }
+
+        form {
+            padding: 10px;
+            margin: 0 10px;
+            background: lightblue;
+        }
+
+        .result-section {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body onload="Get()">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form>
+                <legend><h2>Добавление</h2></legend>
+                <div class="mb-3">
+                    <label for="postName" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="postName">
+                </div>
+                <div class="mb-3">
+                    <label for="postBDay" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" id="postBDay">
+                </div>
+                <button onclick="Post()" type="button" class="btn btn-primary">POST</button>
+            </form>
+        </div>
+        <div class="col">
+            <form>
+                <legend><h2>Обновление</h2></legend>
+                <div class="mb-3">
+                    <label for="putId" class="form-label">Id</label>
+                    <input type="text" class="form-control" id="putId">
+                    <br/>
+                    <button onclick="ShowUserById()" type="button" class="btn btn-success">Show User</button>
+                </div>
+                <div class="mb-3">
+                    <label for="putName" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="putName" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="putBDay" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" id="putBDay" disabled>
+                </div>
+                <button onclick="Put()" type="button" id="upd-btn" class="btn btn-success" disabled>PUT</button>
+            </form>
+        </div>
+        <div class="col">
+            <form>
+                <legend><h2>Удаление</h2></legend>
+                <div class="mb-3">
+                    <label for="deleteId" class="form-label">Id</label>
+                    <input type="text" class="form-control" id="deleteId">
+                </div>
+                <button onclick="Delete()" type="button" class="btn btn-danger">DELETE</button>
+            </form>
+        </div>
+        <div class="col">
+            <form>
+                <legend><h2>Получить статистику</h2></legend>
+                <button onclick="GetStat()" type="button" class="btn btn-success">GetStat</button>
+            </form>
+        </div>
+    </div>
+    <div class="row result-section" id="get_result">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function ShowUserById() {
+        let name = document.getElementById("putName");
+        let bday = document.getElementById("putBDay");
+        let btn = document.getElementById("upd-btn");
+        let id = document.getElementById("putId").value;
+
+        if (id && !isNaN(id)) {
+            console.log(id);
+            fetch(`http://localhost:5000/api/db?id=${id}`, {
+                method: "GET",
+                mode: "no-cors",
+                headers: {"Content-Type": "application/json"}
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log(data);
+                    name.value = data.name;
+                    bday.value = data.bday;
+                    name.disabled = false;
+                    bday.disabled = false;
+                    btn.disabled = false;
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Ошибка!</div>`;
+        }
+    }
+
+    function Get() {
+        fetch("http://localhost:5000/api/db", {
+            method: "GET",
+            mode: "no-cors",
+            headers: {"Content-Type": "application/json"}
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                get_result.innerHTML = "";
+                data.forEach(user => get_result.innerHTML += `<div class="alert alert-primary" role="alert">${user.id}. ${user.name} ${user.bday}</div>`);
+            });
+    }
+
+    function Post() {
+        let name = document.getElementById("postName").value;
+        let bday = document.getElementById("postBDay").value;
+
+        if (name && bday) {
+            let user = {name: name, bday: bday};
+            console.log(user);
+            fetch(`http://localhost:5000/api/db`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(user)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("POST ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+    function Put() {
+        let name = document.getElementById("putName").value;
+        let bday = document.getElementById("putBDay").value;
+        let id = document.getElementById("putId").value;
+
+        if (name && bday && id) {
+            if (isNaN(id)) {
+                get_result.innerHTML = `<div class="alert alert-danger" role="alert">Значение поля id должно быть числом!</div>`;
+                return;
+            }
+
+            let user = {id: +id, name: name, bday: bday};
+            console.log(user);
+            fetch(`http://localhost:5000/api/db`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(user)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("PUT ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+    function Delete() {
+        let id = document.getElementById("deleteId").value;
+        if (id) {
+            if (isNaN(id)) {
+                get_result.innerHTML = `<div class="alert alert-danger" role="alert">Значение поля id должно быть числом!</div>`;
+                return;
+            }
+
+            fetch(`http://localhost:5000/api/db?id=${id}`, {
+                method: 'DELETE'
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("DELETE ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+    function GetStat() {
+        fetch("http://localhost:5000/api/ss", {
+            method: "GET",
+            mode: "no-cors",
+            headers: {"Content-Type": "application/json"}
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                get_result.innerHTML = "";
+                let stat = `start: ${data.startDate}, finish: ${data.finishDate}, req: ${data.reqCount}, commit: ${data.commitCount}`;
+                get_result.innerHTML += `<div class="alert alert-primary" role="alert">${stat}</div>`
+            });
+    }
+</script>
+</body>
+</html>
