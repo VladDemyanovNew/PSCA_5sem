@@ -1,6 +1,7 @@
 import http from "http";
 import url from "url";
 import fs from "fs";
+import send from "./m0603.js";
 
 http.createServer((req, resp) => {
     const pathname = url.parse(req.url).pathname;
@@ -18,9 +19,9 @@ http.createServer((req, resp) => {
     } else if (pathname === "/" && req.method === "POST") {
         req.on("data", (data) => {
             let mail = JSON.parse(data);
+            send("Testing sendMail", mail.message, mail.senderName, mail.reciever);
             resp.writeHead(200, {'Content-Type':'text/html; charset=utf-8'});
             let respText = "Status: OK. Data: " + JSON.stringify(mail);
-            console.log(respText);
             resp.end(respText);
         });
     } else {

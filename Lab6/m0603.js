@@ -1,26 +1,25 @@
 import nodemailer from "nodemailer";
 import fs from "fs";
 const config = JSON.parse(fs.readFileSync('./config.json'));
-console.log(config.mailAuth.user);
 
-export default async function send (){
+export default async function send (subject, text, senderName, reciever){
     let transporter = nodemailer.createTransport({
         host: 'smtp.mail.ru',
         port: 465,
         secure: true,
         auth: {
-            user: '',
-            pass: ''
+            user: config.mailAuth.user,
+            pass: config.mailAuth.pass
         },
     }, {
-        from: 'Mailer Test <vlad.demyanov.official@mail.ru>',
+        from: `${senderName} <${config.mailAuth.user}>`,
     });
 
     let result = transporter.sendMail({
-        to: '',
-        subject: "Hello",
-        text: "Hello world?",
-        html: "<b>Hello world?</b>",
+        to: reciever,
+        subject: subject,
+        text: text,
+        html: `<b>${text}</b>`,
     }, (err, info) => {
         if (err) return console.log(err);
         console.log('Email sent: ', info)

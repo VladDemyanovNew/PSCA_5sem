@@ -11,8 +11,8 @@
 <div class="row col-md-3 p-3">
     <form>
         <div class="md-3">
-            <label class="form-label" for="sender">Sender</label>
-            <input class="form-control" type="email" id="sender" placeholder="Enter email">
+            <label class="form-label" for="sender">Sender name</label>
+            <input class="form-control" type="text" id="sender" placeholder="Enter your name">
         </div>
         <div class="md-3">
             <label class="form-label" for="reciever">Reciever</label>
@@ -28,7 +28,7 @@
 <script>
     function Send() {
         let mailData = {
-            sender: sender.value,
+            senderName: sender.value,
             reciever: reciever.value,
             message: message.value
         };
@@ -43,7 +43,14 @@
                 'Accept':'text/html'
             },
             body: JSON.stringify(mailData)
-        }).then(resp => resp.text()).then(data => console.log(data));
+        }).then(resp => {
+            if (resp.ok) {
+                alert("Mail is sent successfully!");
+                return resp.text();
+            } else {
+                alert("Error HTTP: " + resp.status);
+            }
+        }).then(data => console.log(data));
     }
 
 </script>
