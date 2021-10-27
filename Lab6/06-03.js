@@ -1,2 +1,2 @@
-import send from "./m0603.js";
-send("Testing sendMail", "It works!", 'VDemyanov', 'vlad.demyanov.official@mail.ru');
+import send from "vdm0603/vdm0603.js";
+send("Testing sendMail", "It works!", 'VDemyanov', 'vdemyanov.test@mail.ru');

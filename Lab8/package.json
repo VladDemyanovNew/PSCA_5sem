@@ -1,0 +1,9 @@
+{
+  "name": "lab8",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "formidable": "^1.2.2",
+    "xml2js": "^0.4.23"
+  }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Payments>
+    <Clients>
+        <Client passportData="123-sd-213-ppp" middleName="Ruslanovich" lastName="Demyanov" name="Vlad"/>
+        <Client passportData="123-sd-213-spp" middleName="AlexMiddleName" lastName="AlexLastName" name="Alex"/>
+        <Client passportData="123-sd-213-s54" middleName="PavelMiddleName" lastName="PavelLastName" name="Pavel"/>
+        <Client passportData="124-sd-213-sdf" middleName="Client4MiddleName" lastName="Client4LastName" name="Client4Name"/>
+    </Clients>
+    <Admins>
+        <Admin passportData="122-sd-213-sdf" middleName="Admin1MiddleName" lastName="Admin1LastName" name="Admin1Name"/>
+        <Admin passportData="125-sd-213-sdf" middleName="Admin2MiddleName" lastName="Admin2LastName" name="Admin2Name"/>
+        <Admin passportData="124-sd-213-sdf" middleName="Admin3MiddleName" lastName="Admin3LastName" name="Admin3Name"/>
+        <Admin passportData="1s3-sd-213-sdf" middleName="Admin3MiddleName" lastName="Admin3LastName" name="Admin3Name"/>
+    </Admins>
+</Payments>
