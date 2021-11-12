@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>10-01</h1>
+    <button onclick="startWS()">StartWS</button>
+
+    <script type="text/javascript">
+        let n = 0;
+
+        function startWS() {
+            let socket = new WebSocket("ws:/localhost:4000/wsserver");
+            socket.onopen = () => {
+                console.log("socket.open");
+                let timerId = setInterval(() => {
+                    socket.send(`10-01-client: ${++n}`);
+                }, 3000);
+
+                setTimeout(() => {
+                    clearInterval(timerId);
+                    socket.close();
+                }, 25000);
+            };
+
+            socket.onclose = (e) => {
+                console.log("socket.onclose ", e);
+            };
+
+            socket.onmessage = (e) => {
+                console.log("socket.onmessage ", e.data);
+            };
+
+            socket.onerror = (err) => {
+                alert("Error " + err.message);
+            };
+        }
+    </script>
+</body>
+</html>
