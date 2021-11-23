@@ -1,0 +1,12 @@
+{
+  "name": "Lab11",
+  "version": "1.0",
+  "type": "module",
+  "dependencies": {
+    "rpc-websockets": "^7.4.16",
+    "ws": "^8.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.9"
+  }
+}
