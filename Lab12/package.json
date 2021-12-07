@@ -1,0 +1,8 @@
+{
+  "name": "Lab12",
+  "version": "1.0",
+  "type": "module",
+  "dependencies": {
+    "rpc-websockets": "^7.4.16"
+  }
+}
