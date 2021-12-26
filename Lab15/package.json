@@ -1,0 +1,8 @@
+{
+  "name": "Lab15",
+  "type": "module",
+  "version": "1.0.0",
+  "dependencies": {
+    "mongodb": "^4.2.2"
+  }
+}

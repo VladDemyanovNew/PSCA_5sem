@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 5% 10%;
+        }
+
+        form {
+            padding: 10px;
+            margin: 0 10px;
+            background: lightblue;
+        }
+
+        .result-section {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body onload="Get()">
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form>
+                <legend><h2>Добавление</h2></legend>
+                <div class="mb-3">
+                    <label for="PULPIT" class="form-label">Код кафедры</label>
+                    <input type="text" class="form-control" id="PULPIT">
+                </div>
+                <div class="mb-3">
+                    <label for="PULPIT_NAME" class="form-label">Название кафедры</label>
+                    <input type="text" class="form-control" id="PULPIT_NAME">
+                </div>
+                <div class="mb-3">
+                    <label for="FACULTY" class="form-label">Код факультета</label>
+                    <input type="text" class="form-control" id="FACULTY">
+                </div>
+                <button onclick="Post()" type="button" class="btn btn-primary">Создать</button>
+            </form>
+        </div>
+        <div class="col">
+            <form>
+                <legend><h2>Обновление</h2></legend>
+                <div class="mb-3">
+                    <label for="PULPIT_UPD" class="form-label">Код кафедры</label>
+                    <input type="text" class="form-control" id="PULPIT_UPD">
+                    <br/>
+                    <button onclick="ShowUserById()" type="button" class="btn btn-success">Найти</button>
+                </div>
+                <div class="mb-3">
+                    <label for="PULPIT_NAME_UPD" class="form-label">Название кафедры</label>
+                    <input type="text" class="form-control" id="PULPIT_NAME_UPD">
+                </div>
+                <div class="mb-3">
+                    <label for="FACULTY_UPD" class="form-label">Код факультета</label>
+                    <input type="text" class="form-control" id="FACULTY_UPD">
+                </div>
+                <button onclick="Put()" type="button" id="upd-btn" class="btn btn-success" disabled>PUT</button>
+            </form>
+        </div>
+        <div class="col">
+            <form>
+                <legend><h2>Удаление</h2></legend>
+                <div class="mb-3">
+                    <label for="PULPIT_DEL" class="form-label">Код кафедры</label>
+                    <input type="text" class="form-control" id="PULPIT_DEL">
+                </div>
+                <button onclick="Delete()" type="button" class="btn btn-danger">DELETE</button>
+            </form>
+        </div>
+    </div>
+    <div class="row result-section" id="get_result">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function ShowUserById() {
+        let PULPIT_UPD = document.getElementById("PULPIT_UPD").value;
+        let PULPIT_NAME_UPD = document.getElementById("PULPIT_NAME_UPD");
+        let FACULTY_UPD = document.getElementById("FACULTY_UPD");
+
+        let btn = document.getElementById("upd-btn");
+
+        if (PULPIT_UPD) {
+            fetch(`http://localhost:3000/api/pulpits/pulpit?id=${PULPIT_UPD}`, {
+                method: "GET",
+                mode: "no-cors",
+                headers: {"Content-Type": "application/json"}
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    PULPIT_NAME_UPD.value = data.PULPIT_NAME;
+                    FACULTY_UPD.value = data.FACULTY;
+                    PULPIT_NAME_UPD.disabled = false;
+                    FACULTY_UPD.disabled = false;
+                    btn.disabled = false;
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Ошибка!</div>`;
+        }
+    }
+
+    function Get() {
+        fetch("http://localhost:3000/api/pulpits", {
+            method: "GET",
+            mode: "no-cors",
+            headers: {"Content-Type": "application/json"}
+        })
+            .then(resp => resp.json())
+            .then(data => {
+                get_result.innerHTML = "";
+                data.forEach(pulpit => get_result.innerHTML +=
+                    '<div class="alert alert-primary" role="alert">' +
+                        `${pulpit.PULPIT} ${pulpit.PULPIT_NAME} ${pulpit.FACULTY}` +
+                    '</div>');
+            });
+    }
+
+    function Post() {
+        let PULPIT = document.getElementById("PULPIT").value;
+        let PULPIT_NAME = document.getElementById("PULPIT_NAME").value;
+        let FACULTY = document.getElementById("FACULTY").value;
+
+        if (PULPIT && PULPIT_NAME && FACULTY) {
+            let puplpit = {pulpit: PULPIT, pulpit_name: PULPIT_NAME, faculty: FACULTY};
+            console.log(JSON.stringify(puplpit));
+            fetch(`http://localhost:3000/api/pulpits`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(puplpit)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("POST ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+    function Put() {
+        let PULPIT_UPD = document.getElementById("PULPIT_UPD").value;
+        let PULPIT_NAME_UPD = document.getElementById("PULPIT_NAME_UPD").value;
+        let FACULTY_UPD = document.getElementById("FACULTY_UPD").value;
+
+        if (FACULTY_UPD && PULPIT_NAME_UPD && PULPIT_UPD) {
+            let pulpit = {pulpit: PULPIT_UPD, pulpit_name: PULPIT_NAME_UPD, faculty: FACULTY_UPD};
+            fetch(`http://localhost:3000/api/pulpits`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(pulpit)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("PUT ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+    function Delete() {
+        let PULPIT_DEL = document.getElementById("PULPIT_DEL").value;
+        if (PULPIT_DEL) {
+            fetch(`http://localhost:3000/api/pulpits/${PULPIT_DEL}`, {
+                method: 'DELETE'
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    console.log("DELETE ", data);
+                    Get();
+                });
+        } else {
+            get_result.innerHTML = `<div class="alert alert-danger" role="alert">Заполните все поля формы!</div>`;
+        }
+    }
+
+</script>
+</body>
+</html>

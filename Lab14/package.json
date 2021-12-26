@@ -1,0 +1,8 @@
+{
+  "name": "Lab14",
+  "version": "1.0",
+  "type": "module",
+  "dependencies": {
+    "mssql": "^7.3.0"
+  }
+}

@@ -3,7 +3,7 @@ import {copyFile, deleteAllBackupFiles, getAllBackupFiles, readFile, writeFile} 
 
 export default class HttpHandler {
 
-    static async onGet(request, response) {
+    static onGet(request, response) {
         const pathname = url.parse(request.url).pathname;
         if (pathname === '/') {
             let result = readFile();

@@ -1,0 +1,10 @@
+{
+  "name": "Lab13",
+  "version": "1.0",
+  "type": "module",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "dgram": "^1.0.1",
+    "net": "^1.0.2"
+  }
+}
