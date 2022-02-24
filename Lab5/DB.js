@@ -17,7 +17,6 @@ let stat = {
 export default class DB extends EventEmitter {
     #statMode = false;
 
-
     turnOnStatMode(){
         this.#statMode = true;
     }
@@ -36,7 +35,7 @@ export default class DB extends EventEmitter {
 
     update(updatedUser) {
         let index = users.findIndex(user => user.id === updatedUser.id);
-        if (index != -1) {
+        if (index !== -1) {
             console.log(index);
             users[index] = updatedUser;
             console.log(users);
@@ -46,7 +45,7 @@ export default class DB extends EventEmitter {
     delete(id) {
         let index = users.findIndex(user => user.id === id);
         console.log(index);
-        if (index != -1) {
+        if (index !== -1) {
             users.splice(id, 1);
             return users[index];
         }
@@ -55,7 +54,7 @@ export default class DB extends EventEmitter {
 
     getUserById(id) {
         let index = users.findIndex(user => user.id === id);
-        if (index != -1)
+        if (index !== -1)
             return users[index];
     }
 

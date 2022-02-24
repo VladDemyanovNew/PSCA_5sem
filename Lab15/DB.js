@@ -1,12 +1,11 @@
 import {MongoClient} from "mongodb";
-
 const uri = 'mongodb+srv://vdemyanov:psca2021@bstu.9p6cw.mongodb.net/BSTU?retryWrites=true&w=majority';
 
 export default class DB {
     #client;
 
     constructor() {
-        this.#client = new MongoClient(uri)
+        this.#client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
             .connect()
             .then(connection => {
                 console.log('Соединение с БД установлено');
@@ -25,14 +24,36 @@ export default class DB {
         });
     }
 
-    create(collectionName, value) {
+    findOne(collectionName, filter) {
         return this.#client.then(db => {
             return db.collection(collectionName)
-                .insertOne(value)
-                .then(() => {
-                    return value;
-                });
+                .findOne(filter);
         });
+    }
+
+    async create(collectionName, value) {
+        if (collectionName === 'pulpit') {
+            const doesFacultyExist = (await this.findOne('faculty', { 'faculty': value.faculty })) !== null;
+            if (doesFacultyExist) {
+                return this.#client.then(db => {
+                    return db.collection(collectionName)
+                        .insertOne(value)
+                        .then(() => {
+                            return value;
+                        });
+                });
+            } else {
+                throw new Error('Заданныый факультет не существует');
+            }
+        } else if (collectionName === 'faculty') {
+            return this.#client.then(db => {
+                return db.collection(collectionName)
+                    .insertOne(value)
+                    .then(() => {
+                        return value;
+                    });
+            });
+        }
     }
 
     update(collectionName, filter, value) {
@@ -41,7 +62,7 @@ export default class DB {
                 .findOneAndUpdate(
                     filter,
                     { $set: value },
-                    { 'returnDocument' : "after" }
+                    { 'returnDocument' : 'after' }
                 )
                 .then(result => {
                     return result.value;
@@ -57,5 +78,9 @@ export default class DB {
                    return result.value;
                });
         });
+    }
+
+    close() {
+        this.#client.close();
     }
 }

@@ -11,7 +11,8 @@ const validExts = [
     {ext: "docx", headers: {"Content-Type": "application/msword; charset=utf-8"}},
     {ext: "json", headers: {"Content-Type": "application/json; charset=utf-8"}},
     {ext: "xml", headers: {"Content-Type": "application/xml; charset=utf-8"}},
-    {ext: "mp4", headers: {"Content-Type": "video/mp4; charset=utf-8"}}
+    {ext: "mp4", headers: {"Content-Type": "video/mp4; charset=utf-8"}},
+    {ext: "txt", headers: {"Content-Type": "text/plain; charset=utf-8"}}
 ];
 
 function isStatic(ext, fn) {
