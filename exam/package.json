@@ -1,0 +1,9 @@
+{
+  "name": "exam",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "rpc-websockets": "^7.4.17"
+  }
+}
